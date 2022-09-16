@@ -1,14 +1,20 @@
 {
   "name": "@hybris-software/use-query",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "dependencies": {
-    "react": "^18.2.0",
-    "axios": "^0.27.2"
+    "@babel/polyfill": "^7.12.1",
+    "axios": "^0.27.2",
+    "react": "^18.2.0"
   },
   "description": "Simple way to manage your api calls",
   "license": "MIT",
   "repository": "Hybris-Software/useQuery",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "keywords": [
     "react",
     "javascript",
@@ -18,5 +24,14 @@
     "query",
     "api",
     "react-package"
-  ]
+  ],
+  "scripts": {
+    "build": "rm -rf dist && NODE_ENV=production babel src --out-dir dist --copy-files"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "@babel/preset-react": "^7.18.6"
+  }
 }
