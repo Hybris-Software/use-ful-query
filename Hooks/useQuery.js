@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useRef, useContext } from 'react';
-import ApiProviderContext from '../Context/apiProviderContext';
+import ApiProviderContext from '../Context/ApiProviderContext';
 
 const status = {
     IDLE: 'idle',
