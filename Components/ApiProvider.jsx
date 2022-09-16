@@ -1,5 +1,5 @@
 import React from "react";
-import ApiProviderContext from "../Context/apiProviderContext";
+import ApiProviderContext from "../Context/ApiProviderContext";
 
 const ApiProvider = ({ children, apiClient }) => {
   return (
