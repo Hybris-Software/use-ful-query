@@ -1,10 +1,49 @@
-# **useQuery**:
+# useQuery
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [useQuery](#usequery-1)
+  - [Parameters](#parameters)
+  - [Returned parameters](#returned-parameters)
+- [generateApiClient](#generateapiclient)
+  - [Parameters](#parameters-1)
+- [Examples](#examples)
+  - [Example 1](#example-1)
+  - [Example 2](#example-2)
+
+## Introduction
 
 Hook used to perform queries to an endpoint. Allows easy management of operations and query status.
 
-It internally uses `apiInstance` which can take an absolute url or a relative one since, as specified earlier in the section on configuration, we set an `API_BASE_URL` which `apiInstance` considers its base url.
+It requires an Axios client. This library already provides the `generateApiClient` function which returns a client with a variable base url and an interceptor to send an authentication header. You may also create an axios client by your own.
 
-## **_Parameters:_**
+## Installation
+
+Install the library with `npm install @hybris-software/use-query`.
+
+At the upper level of the application you should insert the `ApiProvider` with an api client as in the example below:
+
+```javascript
+import { generateApiClient, ApiProvider } from "@hybris-software/use-query";
+...
+const apiClient = generateApiClient({
+  baseUrl = "https://my.api.com/api/v1",
+  authorizationHeader = "Authorization",
+  authorizationPrefix = "Bearer"
+})
+...
+root.render(
+  <React.StrictMode>
+    <ApiProvider apiClient={apiClient}>
+      <App />
+    </ApiProvider>
+  </React.StrictMode >
+);
+```
+
+## useQuery
+
+### Parameters
 
 | Parameter          | Type                 | Default     | Description                                                                                                     |
 | ------------------ | -------------------- | ----------- | --------------------------------------------------------------------------------------------------------------- |
@@ -15,7 +54,7 @@ It internally uses `apiInstance` which can take an absolute url or a relative on
 | onUnauthorized     | `(response) => void` | `() => { }` | Function executed after an unsuccessful query if the response code is 401                                       |
 | onError            | `(response) => void` | `() => { }` | Function executed after an unsuccessful query if the response code is not 401                                   |
 
-## **_Returned parameters:_**
+### Returned parameters
 
 | Parameter    | Type                  | Description                                                                                 |
 | ------------ | --------------------- | ------------------------------------------------------------------------------------------- |
@@ -26,11 +65,61 @@ It internally uses `apiInstance` which can take an absolute url or a relative on
 | error        | any                   | The query response if it finished unsuccessfully, `undefined` otherwise                     |
 | executeQuery | `(data?: {}) => void` | Trigger the query with optional body as parameter                                           |
 
-## **_Example 1:_**
+## generateApiClient
+
+This function returns an Axios client with the possibility to set a `baseUrl`, and an authorization header. It gets the authorization token from `localStorage` or `sessionStorage` with the key `token`.
+
+### Parameters
+
+| Parameter           | Type   | Default         | Description                                                                                       |
+| ------------------- | ------ | --------------- | ------------------------------------------------------------------------------------------------- |
+| baseUrl             | string |                 | Axios base url                                                                                    |
+| authorizationHeader | string | "Authorization" | Authorization header name                                                                         |
+| authorizationPrefix | string | "Bearer"        | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage` |
+
+### Our api client
+
+This is what `generateApiClient` generates, you can use it as a base to create your own api client.
+
+```javascript
+const apiClient = axios.create({
+  baseURL: baseUrl,
+});
+
+apiClient.interceptors.request.use(
+  function (config) {
+    config.headers = config.headers || {};
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (token) {
+      config.headers[authorizationHeader] = `${authorizationPrefix} ${token}`;
+    }
+    config.headers["Content-Type"] = "application/json";
+    config.headers["Accept"] = "application/json";
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+
+apiClient.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+```
+
+## Examples
+
+### Example 1
 
 ```javascript
 const { isLoading, executeQuery } = useQuery({
-  url: "api/v1/accounts/login/",
+  url: "accounts/login/", // If baseUrl has been set, you can use a relative url. It also accepts absolute urls.
   method: "POST",
   executeImmediately: false,
   onSuccess: (response) => {
@@ -51,7 +140,7 @@ else
   return <Form submitForm={submitForm} />
 ```
 
-## **_Example 2:_**
+### Example 2
 
 ```javascript
 const { isLoading, isSuccess, data, error } = useQuery({

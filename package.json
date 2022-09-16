@@ -1,6 +1,6 @@
 {
   "name": "@hybris-software/use-query",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "axios": "^0.27.2",
@@ -26,7 +26,8 @@
     "react-package"
   ],
   "scripts": {
-    "build": "rm -rf dist && NODE_ENV=production babel src --out-dir dist --copy-files"
+    "build": "rm -rf dist && NODE_ENV=production babel src --out-dir dist --copy-files",
+    "publish": "npm run build && npm publish"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",

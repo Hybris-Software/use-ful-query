@@ -1,6 +1,6 @@
 import axios from "axios";
 
-function generateApiClient(baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer") {
+function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer"}) {
     const apiClient = axios.create({
         baseURL: baseUrl,
     }
