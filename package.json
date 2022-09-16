@@ -1,0 +1,22 @@
+{
+  "name": "@hybris-software/useQuery",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18.2.0",
+    "axios": "^0.27.2"
+  },
+  "description": "Simple way to manage your api calls",
+  "license": "MIT",
+  "repository": "Hybris-Software/useQuery",
+  "main": "index.js",
+  "keywords": [
+    "react",
+    "javascript",
+    "axios",
+    "query",
+    "npm",
+    "query",
+    "api",
+    "react-package"
+  ]
+}
