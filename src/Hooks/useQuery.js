@@ -44,7 +44,7 @@ const useQuery = ({ url, method = "GET", executeImmediately = false, onSuccess =
                 if (cancelRequest.current) return
                 dispatch({ status: status.ERROR, payload: error.response })
                 if (error.response && error.response.status === 401) {
-                    onUnauthorized()
+                    onUnauthorized(error.response)
                 }
                 else {
                     onError(error.response)
