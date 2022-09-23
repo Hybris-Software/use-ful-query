@@ -2,7 +2,7 @@ import { status } from "./constants";
 
 const generateQueryInitialState = (executeImmediately) => {
   const initialState = {
-    data: undefined,
+    response: undefined,
     error: undefined,
     status: executeImmediately ? status.LOADING : status.IDLE,
   };

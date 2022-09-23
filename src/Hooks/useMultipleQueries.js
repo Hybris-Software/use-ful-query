@@ -40,7 +40,7 @@ const useMultipleQueries = ({
       case status.SUCCESS:
         state[action.queryName] = {
           status: status.SUCCESS,
-          data: action.payload,
+          response: action.payload,
           error: undefined,
         };
         setIsLoading(checkIsLoading(state));
@@ -48,7 +48,7 @@ const useMultipleQueries = ({
       case status.ERROR:
         state[action.queryName] = {
           status: status.ERROR,
-          data: undefined,
+          response: undefined,
           error: action.payload,
         };
         setIsLoading(checkIsLoading(state));
@@ -74,7 +74,7 @@ const useMultipleQueries = ({
   //*******************************************
   // Output generation
   //*******************************************
-  const generateErrors = () => {
+  const retrieveErrors = () => {
     const output = {};
     for (const [queryName, queryState] of Object.entries(queriesState)) {
       if (queryState.status === status.ERROR) {
@@ -84,17 +84,17 @@ const useMultipleQueries = ({
     return output;
   };
 
-  const generateData = () => {
+  const retrieveResponses = () => {
     const output = {};
     for (const [queryName, queryState] of Object.entries(queriesState)) {
       if (queryState.status === status.SUCCESS) {
-        output[queryName] = queryState.data;
+        output[queryName] = queryState.response;
       }
     }
     return output;
   };
 
-  const generateStatus = () => {
+  const retrieveStatuses = () => {
     const output = {};
     for (const [queryName, queryState] of Object.entries(queriesState)) {
       output[queryName] = queryState.status;
@@ -135,10 +135,16 @@ const useMultipleQueries = ({
           dispatch({
             queryName: queryName,
             status: status.ERROR,
-            payload: error.response,
+            payload: error,
           });
 
-          if ("onError" in queryOptions) {
+          if (
+            error.response &&
+            error.response.status === 401 &&
+            queryOptions.onUnauthorized
+          ) {
+            queryOptions.onUnauthorized(error);
+          } else if (queryOptions.onError) {
             queryOptions.onError(error);
           }
         });
@@ -168,9 +174,9 @@ const useMultipleQueries = ({
 
   return {
     executeQueries,
-    errors: generateErrors(),
-    data: generateData(),
-    status: generateStatus(),
+    errors: retrieveErrors(),
+    responses: retrieveResponses(),
+    statuses: retrieveStatuses(),
     isLoading: isLoading,
     queries: queriesState,
   };
