@@ -1,33 +1,27 @@
 import { useReducer, useEffect, useRef, useContext } from 'react';
 import ApiProviderContext from '../Context/ApiProviderContext';
-
-const status = {
-    IDLE: 'idle',
-    LOADING: 'loading',
-    SUCCESS: 'success',
-    ERROR: 'error'
-}
+import { status } from '../Utils/constants';
+import generateQueryInitialState from '../Utils/generateQueryInitialState';
 
 const useQuery = ({ url, method = "GET", executeImmediately = false, onSuccess = () => { }, onError = () => { }, onUnauthorized = () => { } }) => {
 
     const apiClient = useContext(ApiProviderContext);
-    const cancelRequest = useRef(false)
-    const initialState = { data: undefined, error: undefined, status: executeImmediately ? status.LOADING : status.IDLE }
+    const cancelRequest = useRef(false);
 
-    const fetchReducer = (state, action) => {
+    const queryReducer = (state, action) => {
         switch (action.status) {
             case status.LOADING:
-                return { ...initialState, status: status.LOADING }
+                return { ...generateQueryInitialState(executeImmediately), status: status.LOADING }
             case status.SUCCESS:
-                return { ...initialState, status: status.SUCCESS, data: action.payload }
+                return { ...generateQueryInitialState(executeImmediately), status: status.SUCCESS, data: action.payload }
             case status.ERROR:
-                return { ...initialState, status: status.ERROR, error: action.payload }
+                return { ...generateQueryInitialState(executeImmediately), status: status.ERROR, error: action.payload }
             default:
                 return state;
         }
     }
 
-    const [state, dispatch] = useReducer(fetchReducer, initialState)
+    const [state, dispatch] = useReducer(queryReducer, generateQueryInitialState(executeImmediately))
 
     const executeQuery = (data = {}) => {
 

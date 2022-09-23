@@ -27,9 +27,9 @@ At the upper level of the application you should insert the `ApiProvider` with a
 import { generateApiClient, ApiProvider } from "@hybris-software/use-query";
 ...
 const apiClient = generateApiClient({
-  baseUrl = "https://my.api.com/api/v1",
-  authorizationHeader = "Authorization",
-  authorizationPrefix = "Bearer"
+  baseUrl: "https://my.api.com/api/v1",
+  authorizationHeader: "Authorization",
+  authorizationPrefix: "Bearer"
 })
 ...
 root.render(
