@@ -3,4 +3,5 @@ import useMultipleQueries from "./Hooks/useMultipleQueries";
 import generateApiClient from "./Api/client";
 import ApiProvider from "./Components/ApiProvider";
 
-export { useQuery, useMultipleQueries, generateApiClient, ApiProvider };
+export default useQuery;
+export { useMultipleQueries, generateApiClient, ApiProvider };
