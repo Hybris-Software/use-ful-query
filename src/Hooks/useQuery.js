@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useRef, useContext } from "react";
 import ApiProviderContext from "../Context/ApiProviderContext";
-import { status } from "../Utils/constants";
+import { status, actions } from "../Utils/constants";
 import generateQueryInitialState from "../Utils/generateQueryInitialState";
 
 const useQuery = ({
@@ -39,6 +39,8 @@ const useQuery = ({
           status: status.ERROR,
           error: action.payload,
         };
+      case actions.RESET:
+        return generateQueryInitialState(executeImmediately);
       default:
         return state;
     }
@@ -79,6 +81,10 @@ const useQuery = ({
       });
   };
 
+  const resetQuery = () => {
+    dispatch({ status: actions.RESET });
+  };
+
   useEffect(() => {
     if (executeImmediately) executeQuery();
     return () => {
@@ -93,6 +99,7 @@ const useQuery = ({
     response: state.response,
     error: state.error,
     executeQuery: executeQuery,
+    resetQuery: resetQuery,
   };
 };
 

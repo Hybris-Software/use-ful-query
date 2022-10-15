@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useRef, useContext, useState } from "react";
 import ApiProviderContext from "../Context/ApiProviderContext";
-import { status } from "../Utils/constants";
+import { status, actions } from "../Utils/constants";
 import generateQueryInitialState from "../Utils/generateQueryInitialState";
 
 const useMultipleQueries = ({
@@ -53,6 +53,8 @@ const useMultipleQueries = ({
         };
         setIsLoading(checkIsLoading(state));
         return state;
+      case actions.RESET:
+        return generateInitialState(queries);
       default:
         return state;
     }
@@ -151,6 +153,10 @@ const useMultipleQueries = ({
     }
   };
 
+  const resetQueries = () => {
+    dispatch({ status: actions.RESET });
+  };
+
   useEffect(() => {
     if (executeImmediately) executeQueries();
     return () => {
@@ -174,6 +180,7 @@ const useMultipleQueries = ({
 
   return {
     executeQueries,
+    resetQueries,
     errors: retrieveErrors(),
     responses: retrieveResponses(),
     statuses: retrieveStatuses(),
