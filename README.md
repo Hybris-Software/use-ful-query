@@ -64,6 +64,8 @@ const apiClient = axios.create({
   baseURL: baseUrl,
 });
 
+apiClient.defaults.timeout = 2500;
+
 apiClient.interceptors.request.use(
   function (config) {
     config.headers = config.headers || {};

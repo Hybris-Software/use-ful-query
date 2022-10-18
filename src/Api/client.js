@@ -3,8 +3,9 @@ import axios from "axios";
 function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer"}) {
     const apiClient = axios.create({
         baseURL: baseUrl,
-    }
-    );
+    });
+
+    apiClient.defaults.timeout = 2500;
 
     apiClient.interceptors.request.use(
         function (config) {
