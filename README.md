@@ -62,9 +62,12 @@ This is what `generateApiClient` generates, you can use it as a base to create y
 ```javascript
 const apiClient = axios.create({
   baseURL: baseUrl,
+  timeout: 5000,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
 });
-
-apiClient.defaults.timeout = 2500;
 
 apiClient.interceptors.request.use(
   function (config) {
@@ -107,6 +110,7 @@ This hook performs only one query, if you have to perform multiple queries in pa
 | onSuccess          | `(response) => void` | `() => { }` | Function executed after a successful query                                                                         |
 | onUnauthorized     | `(error) => void`    | undefined   | Function executed after an unsuccessful query if the response code is 401 (optional, see `onError`)                |
 | onError            | `(error) => void`    | `() => { }` | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code |
+| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                         |
 
 ### 4.2 - Returned parameters
 
@@ -136,6 +140,7 @@ This hooks allows to perform multiple queries in parallel with a syntax similar 
 | -- onError         | `(error) => void`    |             | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code |
 | executeImmediately | boolean              | false       | Sets whether the call should be executed when the component is created or wait for the call to `executeQueries()`  |
 | onEnd              | `(response) => void` | `() => { }` | Function executed after after all the queries finished                                                             |
+| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                         |
 
 ### 5.2 - Returned parameters
 

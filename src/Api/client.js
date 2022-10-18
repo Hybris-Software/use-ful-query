@@ -3,9 +3,12 @@ import axios from "axios";
 function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer"}) {
     const apiClient = axios.create({
         baseURL: baseUrl,
+        timeout: 5000,
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
     });
-
-    apiClient.defaults.timeout = 2500;
 
     apiClient.interceptors.request.use(
         function (config) {
@@ -15,8 +18,6 @@ function generateApiClient({baseUrl = "", authorizationHeader = "Authorization",
             if (token) {
                 config.headers[authorizationHeader] = `${authorizationPrefix} ${token}`;
             }
-            config.headers["Content-Type"] = "application/json";
-            config.headers["Accept"] = "application/json";
             return config;
         },
         function (error) {

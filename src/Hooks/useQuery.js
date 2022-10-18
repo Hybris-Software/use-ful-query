@@ -10,6 +10,7 @@ const useQuery = ({
   onSuccess = () => {},
   onError = () => {},
   onUnauthorized = undefined,
+  clientOptions = {},
 }) => {
   //*******************************************
   // States
@@ -58,7 +59,7 @@ const useQuery = ({
     cancelRequest.current = false;
     dispatch({ status: status.LOADING });
 
-    apiClient({ url: url, method: method, data: data })
+    apiClient({ url: url, method: method, data: data, ...clientOptions })
       .then((response) => {
         if (cancelRequest.current) return;
 

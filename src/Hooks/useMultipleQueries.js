@@ -7,6 +7,7 @@ const useMultipleQueries = ({
   queries,
   executeImmediately = false,
   onEnd = () => {},
+  clientOptions = {},
 }) => {
   //*******************************************
   // States
@@ -117,6 +118,7 @@ const useMultipleQueries = ({
         url: queryOptions.url,
         method: queryOptions.method || "GET",
         data: queryName in data ? data[queryName] : queryOptions.data,
+        ...clientOptions,
       })
         .then((response) => {
           if (cancelRequest.current) return;
