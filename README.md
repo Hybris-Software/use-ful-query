@@ -54,6 +54,7 @@ This function returns an Axios client with the possibility to set a `baseUrl`, a
 | baseUrl             | string |                 | Axios base url                                                                                    |
 | authorizationHeader | string | "Authorization" | Authorization header name                                                                         |
 | authorizationPrefix | string | "Bearer"        | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage` |
+| localStorageKey     | string | "token"         | Local storage key that contains the authentication token                                          |
 
 ### 3.2 - Our api client
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer"}) {
+function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer", localStorageKey = "token"}) {
     const apiClient = axios.create({
         baseURL: baseUrl,
         timeout: 5000,
@@ -14,7 +14,7 @@ function generateApiClient({baseUrl = "", authorizationHeader = "Authorization",
         function (config) {
             config.headers = config.headers || {};
             const token =
-                localStorage.getItem("token") || sessionStorage.getItem("token");
+                localStorage.getItem(localStorageKey) || sessionStorage.getItem(localStorageKey);
             if (token) {
                 config.headers[authorizationHeader] = `${authorizationPrefix} ${token}`;
             }
