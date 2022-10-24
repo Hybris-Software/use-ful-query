@@ -1,7 +1,12 @@
 import useQuery from "./Hooks/useQuery";
 import useMultipleQueries from "./Hooks/useMultipleQueries";
-import generateApiClient from "./Api/client";
+import { generateApiClient, generateJwtApiClient } from "./Api/client";
 import ApiProvider from "./Components/ApiProvider";
 
 export default useQuery;
-export { useMultipleQueries, generateApiClient, ApiProvider };
+export {
+  useMultipleQueries,
+  generateApiClient,
+  generateJwtApiClient,
+  ApiProvider,
+};
