@@ -7,9 +7,12 @@
   - [Returned parameters](#returned-parameters)
 - [generateApiClient](#generateapiclient)
   - [Parameters](#parameters-1)
+- [generateJwtApiClient](#generatejwtapiclient)
+  - [Parameters](#parameters-2)
 - [Examples](#examples)
   - [Example 1](#example-1)
   - [Example 2](#example-2)
+  - [Example with JWT](#examplewithjwt)
 
 ## 1 - Introduction
 
@@ -97,11 +100,26 @@ apiClient.interceptors.response.use(
 );
 ```
 
-## 4 - useQuery
+## 4 - generateJwtApiClient
+
+This function returns an Axios client with the possibility to set a `baseUrl`, and an authorization header. It gets the authorization token from `localStorage` or `sessionStorage` with the key `token`.
+
+### 4.1 - Parameters
+
+| Parameter                   | Type     | Default         | Description                                                                                                                |
+| --------------------------- | -------- | --------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| baseUrl                     | string   |                 | Axios base url                                                                                                             |
+| authorizationHeader         | string   | "Authorization" | Authorization header name                                                                                                  |
+| authorizationPrefix         | string   | "Bearer "       | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage`                          |
+| accessTokenLocalStorageKey  | string   | "accessToken"   | Local storage key that contains the access token                                                                           |
+| refreshTokenLocalStorageKey | string   | "refreshToken"  | Local storage key that contains the refresh token                                                                          |
+| refreshTokenFunction        | function |                 | An asyncronous function that receives the old access token and refresh token and returns [newAccessToken, newRefreshToken] |
+
+## 5 - useQuery
 
 This hook performs only one query, if you have to perform multiple queries in parallel you can call multiple times `useQuery` or use `useMultipleQueries` as described below.
 
-### 4.1 - Parameters
+### 5.1 - Parameters
 
 | Parameter          | Type                 | Default     | Description                                                                                                        |
 | ------------------ | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -113,7 +131,7 @@ This hook performs only one query, if you have to perform multiple queries in pa
 | onError            | `(error) => void`    | `() => { }` | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code |
 | clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                         |
 
-### 4.2 - Returned parameters
+### 5.2 - Returned parameters
 
 | Parameter    | Type                  | Description                                                                                                                                    |
 | ------------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -124,11 +142,11 @@ This hook performs only one query, if you have to perform multiple queries in pa
 | error        | any                   | The generated error if the query finished unsuccessfully, `undefined` otherwise. If it got a response, it can be accessed via `error.response` |
 | executeQuery | `(data?: {}) => void` | Trigger the query with optional body as parameter                                                                                              |
 
-## 5 - useMultipleQueries
+## 6 - useMultipleQueries
 
 This hooks allows to perform multiple queries in parallel with a syntax similar to that of `useQuery`.
 
-### 5.1 - Parameters
+### 6.1 - Parameters
 
 | Parameter          | Type                 | Default     | Description                                                                                                        |
 | ------------------ | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -143,7 +161,7 @@ This hooks allows to perform multiple queries in parallel with a syntax similar 
 | onEnd              | `(response) => void` | `() => { }` | Function executed after after all the queries finished                                                             |
 | clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                         |
 
-### 5.2 - Returned parameters
+### 6.2 - Returned parameters
 
 | Parameter      | Type                  | Description                                                                                                                                                 |
 | -------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -154,9 +172,9 @@ This hooks allows to perform multiple queries in parallel with a syntax similar 
 | isLoading      | boolean               | `true` if any calls are in progress, `false` otherwise, even if it has not yet started                                                                      |
 | queries        | object                | Contains all the information of each query. The key is the name of the query, the value is an object with the following queries: `status, error, response`  |
 
-## 6 - Examples
+## 7 - Examples
 
-### 6.1 - Example 1
+### 7.1 - Example 1
 
 ```javascript
 const { isLoading, executeQuery } = useQuery({
@@ -181,7 +199,7 @@ else
   return <Form submitForm={submitForm} />
 ```
 
-### 6.2 - Example 2
+### 7.2 - Example 2
 
 ```javascript
 const { isLoading, isSuccess, data, error } = useQuery({
@@ -227,4 +245,31 @@ const { queries } = useMultipleQueries({
     console.log("All done");
   },
 });
+```
+
+### 7.3 - Example with JWT
+
+```javascript
+import axios from "axios";
+import { generateJwtApiClient, ApiProvider } from "@hybris-software/use-query";
+...
+const apiClient = generateJwtApiClient({
+  baseUrl: "https://my.api.com/api/v1",
+  authorizationHeader: "Authorization",
+  authorizationPrefix: "Bearer ",
+  refreshTokenFunction: async ({accessToken, refreshToken}) => {
+    const response = await axios.post("https://example.com/refresh", {accessToken, refreshToken})
+    const updatedAccessToken = response.data.accessToken;
+    const updatedRefreshToken = response.data.refreshToken;
+    return [updatedAccessToken, updatedRefreshToken];
+  }
+})
+...
+root.render(
+  <React.StrictMode>
+    <ApiProvider apiClient={apiClient}>
+      <App />
+    </ApiProvider>
+  </React.StrictMode >
+);
 ```
