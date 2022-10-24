@@ -31,7 +31,7 @@ import { generateApiClient, ApiProvider } from "@hybris-software/use-query";
 const apiClient = generateApiClient({
   baseUrl: "https://my.api.com/api/v1",
   authorizationHeader: "Authorization",
-  authorizationPrefix: "Bearer"
+  authorizationPrefix: "Bearer "
 })
 ...
 root.render(
@@ -53,7 +53,7 @@ This function returns an Axios client with the possibility to set a `baseUrl`, a
 | ------------------- | ------ | --------------- | ------------------------------------------------------------------------------------------------- |
 | baseUrl             | string |                 | Axios base url                                                                                    |
 | authorizationHeader | string | "Authorization" | Authorization header name                                                                         |
-| authorizationPrefix | string | "Bearer"        | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage` |
+| authorizationPrefix | string | "Bearer "       | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage` |
 | localStorageKey     | string | "token"         | Local storage key that contains the authentication token                                          |
 
 ### 3.2 - Our api client
@@ -76,7 +76,7 @@ apiClient.interceptors.request.use(
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
     if (token) {
-      config.headers[authorizationHeader] = `${authorizationPrefix} ${token}`;
+      config.headers[authorizationHeader] = `${authorizationPrefix}${token}`;
     }
     config.headers["Content-Type"] = "application/json";
     config.headers["Accept"] = "application/json";
