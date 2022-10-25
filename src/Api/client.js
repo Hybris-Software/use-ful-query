@@ -1,5 +1,5 @@
 import axios from "axios";
-import jwt from "jsonwebtoken"
+import parseJwt from "./parseJwt";
 
 export function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer ", localStorageKey = "token"}) {
     const apiClient = axios.create({
@@ -59,7 +59,7 @@ export function generateJwtApiClient({baseUrl = "", authorizationHeader = "Autho
 
             if (accessToken) {
                 // Check if the access token is expired
-                const decoded = jwt.decode(accessToken);
+                const decoded = parseJwt(accessToken);
                 if(decoded.exp && decoded.exp < Date.now() / 1000 && refreshToken && refreshTokenFunction && refreshTokenUrl) {
                     // If the access token is expired, try to refresh it
                     try {
