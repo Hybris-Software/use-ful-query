@@ -1,5 +1,5 @@
 import axios from "axios";
-import parseJwt from "./parseJwt";
+import parseJwt from "../Utils/parseJwt";
 
 export function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer ", localStorageKey = "token"}) {
     const apiClient = axios.create({
