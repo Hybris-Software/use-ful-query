@@ -1,10 +1,10 @@
 import axios from "axios";
 import parseJwt from "../Utils/parseJwt";
 
-export function generateApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer ", localStorageKey = "token"}) {
+export function generateApiClient({baseUrl = "", timeout = 5000, authorizationHeader = "Authorization", authorizationPrefix = "Bearer ", localStorageKey = "token"}) {
     const apiClient = axios.create({
         baseURL: baseUrl,
-        timeout: 5000,
+        timeout: timeout,
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
@@ -38,10 +38,10 @@ export function generateApiClient({baseUrl = "", authorizationHeader = "Authoriz
     return apiClient;
 }
 
-export function generateJwtApiClient({baseUrl = "", authorizationHeader = "Authorization", authorizationPrefix = "Bearer ", accessTokenLocalStorageKey = "accessToken", refreshTokenLocalStorageKey = "refreshToken", refreshTokenFunction = undefined}) {
+export function generateJwtApiClient({baseUrl = "", timeout = 5000, authorizationHeader = "Authorization", authorizationPrefix = "Bearer ", accessTokenLocalStorageKey = "accessToken", refreshTokenLocalStorageKey = "refreshToken", refreshTokenFunction = undefined}) {
     const apiClient = axios.create({
         baseURL: baseUrl,
-        timeout: 5000,
+        timeout: timeout,
         headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
