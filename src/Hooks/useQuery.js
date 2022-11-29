@@ -55,11 +55,11 @@ const useQuery = ({
   //*******************************************
   // Query logic
   //*******************************************
-  const executeQuery = (data = {}) => {
+  const executeQuery = (data = {}, params = {}) => {
     cancelRequest.current = false;
     dispatch({ status: status.LOADING });
 
-    apiClient({ url: url, method: method, data: data, ...clientOptions })
+    apiClient({ url: url, method: method, data: data, params: params, ...clientOptions })
       .then((response) => {
         if (cancelRequest.current) return;
 
