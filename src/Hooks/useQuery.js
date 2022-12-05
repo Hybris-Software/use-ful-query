@@ -7,8 +7,8 @@ const useQuery = ({
   url,
   method = "GET",
   executeImmediately = false,
-  onSuccess = () => {},
-  onError = () => {},
+  onSuccess = () => { },
+  onError = () => { },
   onUnauthorized = undefined,
 }) => {
   //*******************************************
@@ -61,7 +61,12 @@ const useQuery = ({
         if (cancelRequest.current) return;
 
         dispatch({ status: status.SUCCESS, payload: response });
-        onSuccess(response);
+        try {
+          onSuccess(response);
+        }
+        catch (e) {
+          console.error(e);
+        }
       })
       .catch((error) => {
         if (cancelRequest.current) return;
