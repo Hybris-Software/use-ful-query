@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useRef, useContext } from "react";
 import ApiProviderContext from "../Context/ApiProviderContext";
-import { status } from "../Utils/constants";
+import { status, actions } from "../Utils/constants";
 import generateQueryInitialState from "../Utils/generateQueryInitialState";
 
 const useQuery = ({
@@ -10,6 +10,7 @@ const useQuery = ({
   onSuccess = () => { },
   onError = () => { },
   onUnauthorized = undefined,
+  clientOptions = {},
 }) => {
   //*******************************************
   // States
@@ -39,6 +40,8 @@ const useQuery = ({
           status: status.ERROR,
           error: action.payload,
         };
+      case actions.RESET:
+        return generateQueryInitialState(executeImmediately);
       default:
         return state;
     }
@@ -52,11 +55,11 @@ const useQuery = ({
   //*******************************************
   // Query logic
   //*******************************************
-  const executeQuery = (data = {}) => {
+  const executeQuery = (data = {}, params = {}) => {
     cancelRequest.current = false;
     dispatch({ status: status.LOADING });
 
-    apiClient({ url: url, method: method, data: data })
+    apiClient({ url: url, method: method, data: data, params: params, ...clientOptions })
       .then((response) => {
         if (cancelRequest.current) return;
 
@@ -84,6 +87,10 @@ const useQuery = ({
       });
   };
 
+  const resetQuery = () => {
+    dispatch({ status: actions.RESET });
+  };
+
   useEffect(() => {
     if (executeImmediately) executeQuery();
     return () => {
@@ -98,6 +105,7 @@ const useQuery = ({
     response: state.response,
     error: state.error,
     executeQuery: executeQuery,
+    resetQuery: resetQuery,
   };
 };
 

@@ -1,9 +1,10 @@
 {
   "name": "@hybris-software/use-query",
-  "version": "2.0.3",
+  "version": "2.3.14",
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "axios": "^0.27.2",
+    "core-js": "^3.25.5",
     "react": "^18.2.0"
   },
   "description": "Simple way to manage your api calls",
@@ -26,8 +27,7 @@
     "react-package"
   ],
   "scripts": {
-    "build": "rm -rf dist && NODE_ENV=production babel src --out-dir dist --copy-files",
-    "publish": "npm run build && npm publish"
+    "build": "rm -rf dist && NODE_ENV=production babel src --out-dir dist --copy-files"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",

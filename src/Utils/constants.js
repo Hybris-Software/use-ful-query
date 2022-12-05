@@ -5,4 +5,8 @@ const status = {
   ERROR: "error",
 };
 
-export { status };
+const actions = {
+  RESET: "reset",
+};
+
+export { status, actions };
