@@ -12,7 +12,8 @@ const useMultipleQueries = ({
   //*******************************************
   // States
   //*******************************************
-  const apiClient = useContext(ApiProviderContext);
+  const { apiClient, onUnauthorized: defaultOnUnauthorized } =
+    useContext(ApiProviderContext);
   const cancelRequest = useRef(false);
   const [isLoading, setIsLoading] = useState(executeImmediately);
 
@@ -142,12 +143,13 @@ const useMultipleQueries = ({
             payload: error,
           });
 
+          onUnauthorizedFunction = queryOptions.onUnauthorized !== undefined ? queryOptions.onUnauthorized : defaultOnUnauthorized;
           if (
             error.response &&
             error.response.status === 401 &&
-            queryOptions.onUnauthorized
+            onUnauthorizedFunction
           ) {
-            queryOptions.onUnauthorized(error);
+            onUnauthorizedFunction(error);
           } else if (queryOptions.onError) {
             queryOptions.onError(error);
           }

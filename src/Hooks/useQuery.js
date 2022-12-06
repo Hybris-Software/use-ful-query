@@ -15,7 +15,8 @@ const useQuery = ({
   //*******************************************
   // States
   //*******************************************
-  const apiClient = useContext(ApiProviderContext);
+  const { apiClient, onUnauthorized: defaultOnUnauthorized } =
+    useContext(ApiProviderContext);
   const cancelRequest = useRef(false);
 
   //*******************************************
@@ -75,12 +76,14 @@ const useQuery = ({
         if (cancelRequest.current) return;
 
         dispatch({ status: status.ERROR, payload: error });
+
+        onUnauthorizedFunction = onUnauthorized !== undefined ? onUnauthorized : defaultOnUnauthorized;
         if (
           error.response &&
           error.response.status === 401 &&
-          onUnauthorized !== undefined
+          onUnauthorizedFunction
         ) {
-          onUnauthorized(error);
+          onUnauthorizedFunction(error);
         } else {
           onError(error);
         }

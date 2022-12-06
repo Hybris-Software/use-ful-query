@@ -123,15 +123,15 @@ This hook performs only one query, if you have to perform multiple queries in pa
 
 ### 5.1 - Parameters
 
-| Parameter          | Type                 | Default     | Description                                                                                                        |
-| ------------------ | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------ |
-| url                | string               |             | Endpoint url                                                                                                       |
-| method             | string               | 'GET'       | Request method (GET, POST...)                                                                                      |
-| executeImmediately | boolean              | false       | Sets whether the call should be executed when the component is created or wait for the call to `executeQuery()`    |
-| onSuccess          | `(response) => void` | `() => { }` | Function executed after a successful query                                                                         |
-| onUnauthorized     | `(error) => void`    | undefined   | Function executed after an unsuccessful query if the response code is 401 (optional, see `onError`)                |
-| onError            | `(error) => void`    | `() => { }` | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code |
-| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                         |
+| Parameter          | Type                 | Default     | Description                                                                                                                                                                                                                                                                                |
+| ------------------ | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| url                | string               |             | Endpoint url                                                                                                                                                                                                                                                                               |
+| method             | string               | 'GET'       | Request method (GET, POST...)                                                                                                                                                                                                                                                              |
+| executeImmediately | boolean              | false       | Sets whether the call should be executed when the component is created or wait for the call to `executeQuery()`                                                                                                                                                                            |
+| onSuccess          | `(response) => void` | `() => { }` | Function executed after a successful query                                                                                                                                                                                                                                                 |
+| onUnauthorized     | `(error) => void`    | undefined   | Function executed after an unsuccessful query if the response code is 401 (optional, see `onError`). The default function is the one defined in the `ApiProvider` if it is not specified in useQuery. To disable the default one and not use an `onUnauthorized` set `onUnauthorized=null` |
+| onError            | `(error) => void`    | `() => { }` | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code                                                                                                                                                                         |
+| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                                                                                                                                                                                                 |
 
 ### 5.2 - Returned parameters
 
@@ -150,18 +150,18 @@ This hooks allows to perform multiple queries in parallel with a syntax similar 
 
 ### 6.1 - Parameters
 
-| Parameter          | Type                 | Default     | Description                                                                                                        |
-| ------------------ | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------ |
-| queries            | object               |             | Object where the key is the name of the query. The content variables are described below.                          |
-| -- url             | string               |             | Endpoint url                                                                                                       |
-| -- method          | string               | 'GET'       | Request method (GET, POST...)                                                                                      |
-| -- data            | object               | { }         | Request body                                                                                                       |
-| -- onSuccess       | `(response) => void` |             | Function executed after a successful query                                                                         |
-| -- onUnauthorized  | `(error) => void`    |             | Function executed after an unsuccessful query if the response code is 401 (optional, see `onError`)                |
-| -- onError         | `(error) => void`    |             | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code |
-| executeImmediately | boolean              | false       | Sets whether the call should be executed when the component is created or wait for the call to `executeQueries()`  |
-| onEnd              | `(response) => void` | `() => { }` | Function executed after after all the queries finished                                                             |
-| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                         |
+| Parameter          | Type                 | Default     | Description                                                                                                                                                                                                                                                                                          |
+| ------------------ | -------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| queries            | object               |             | Object where the key is the name of the query. The content variables are described below.                                                                                                                                                                                                            |
+| -- url             | string               |             | Endpoint url                                                                                                                                                                                                                                                                                         |
+| -- method          | string               | 'GET'       | Request method (GET, POST...)                                                                                                                                                                                                                                                                        |
+| -- data            | object               | { }         | Request body                                                                                                                                                                                                                                                                                         |
+| -- onSuccess       | `(response) => void` |             | Function executed after a successful query                                                                                                                                                                                                                                                           |
+| -- onUnauthorized  | `(error) => void`    |             | Function executed after an unsuccessful query if the response code is 401 (optional, see `onError`). The default function is the one defined in the `ApiProvider` if it is not specified in useMultipleQueries. To disable the default one and not use an `onUnauthorized` set `onUnauthorized=null` |
+| -- onError         | `(error) => void`    |             | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code                                                                                                                                                                                   |
+| executeImmediately | boolean              | false       | Sets whether the call should be executed when the component is created or wait for the call to `executeQueries()`                                                                                                                                                                                    |
+| onEnd              | `(response) => void` | `() => { }` | Function executed after after all the queries finished                                                                                                                                                                                                                                               |
+| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                                                                                                                                                                                                           |
 
 ### 6.2 - Returned parameters
 
@@ -269,7 +269,7 @@ const apiClient = generateJwtApiClient({
 ...
 root.render(
   <React.StrictMode>
-    <ApiProvider apiClient={apiClient}>
+    <ApiProvider apiClient={apiClient} onUnauthorized={(response) => {console.log(response)}}>
       <App />
     </ApiProvider>
   </React.StrictMode >
