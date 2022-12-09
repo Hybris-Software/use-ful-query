@@ -143,7 +143,7 @@ const useMultipleQueries = ({
             payload: error,
           });
 
-          onUnauthorizedFunction = queryOptions.onUnauthorized !== undefined ? queryOptions.onUnauthorized : defaultOnUnauthorized;
+          const onUnauthorizedFunction = queryOptions.onUnauthorized !== undefined ? queryOptions.onUnauthorized : defaultOnUnauthorized;
           if (
             error.response &&
             error.response.status === 401 &&

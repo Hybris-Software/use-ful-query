@@ -77,7 +77,7 @@ const useQuery = ({
 
         dispatch({ status: status.ERROR, payload: error });
 
-        onUnauthorizedFunction = onUnauthorized !== undefined ? onUnauthorized : defaultOnUnauthorized;
+        const onUnauthorizedFunction = onUnauthorized !== undefined ? onUnauthorized : defaultOnUnauthorized;
         if (
           error.response &&
           error.response.status === 401 &&
