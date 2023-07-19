@@ -7,7 +7,7 @@ export function generateApiClient({
   authorizationHeader = "Authorization",
   authorizationPrefix = "Bearer ",
   localStorageKey = "token",
-  AcceptLanguage = "en-en",
+  acceptLanguage = "en-en",
 }) {
   const apiClient = axios.create({
     baseURL: baseUrl,
@@ -15,7 +15,7 @@ export function generateApiClient({
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
-      "Accept-Language": AcceptLanguage,
+      "Accept-Language": acceptLanguage,
     },
   });
 
