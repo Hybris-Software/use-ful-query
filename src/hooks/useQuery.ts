@@ -1,22 +1,25 @@
 import { useReducer, useEffect, useRef, useContext } from "react";
-import ApiProviderContext from "../Context/ApiProviderContext";
-import { status, actions } from "../Utils/constants";
-import generateQueryInitialState from "../Utils/generateQueryInitialState";
+import { ApiProviderContext } from "../context/apiProviderContext";
+import { Status, Actions } from "../utils/constants";
+import { generateQueryInitialState } from "../utils/states";
+import { UseQueryProps, ApiProviderContextData } from "../types";
 
-const useQuery = ({
+export const useQuery = ({
   url,
   method = "GET",
   executeImmediately = false,
-  onSuccess = () => { },
-  onError = () => { },
+  onSuccess = () => {},
+  onError = () => {},
   onUnauthorized = undefined,
   clientOptions = {},
-}) => {
+}: UseQueryProps) => {
   //*******************************************
   // States
   //*******************************************
-  const { apiClient, onUnauthorized: defaultOnUnauthorized } =
-    useContext(ApiProviderContext);
+  const {
+    apiClient,
+    onUnauthorized: defaultOnUnauthorized,
+  }: ApiProviderContextData = useContext(ApiProviderContext);
   const cancelRequest = useRef(false);
 
   //*******************************************
@@ -24,24 +27,24 @@ const useQuery = ({
   //*******************************************
   const queryReducer = (state, action) => {
     switch (action.status) {
-      case status.LOADING:
+      case Status.LOADING:
         return {
           ...generateQueryInitialState(executeImmediately),
-          status: status.LOADING,
+          status: Status.LOADING,
         };
-      case status.SUCCESS:
+      case Status.SUCCESS:
         return {
           ...generateQueryInitialState(executeImmediately),
-          status: status.SUCCESS,
+          status: Status.SUCCESS,
           response: action.payload,
         };
-      case status.ERROR:
+      case Status.ERROR:
         return {
           ...generateQueryInitialState(executeImmediately),
-          status: status.ERROR,
+          status: Status.ERROR,
           error: action.payload,
         };
-      case actions.RESET:
+      case Actions.RESET:
         return generateQueryInitialState(executeImmediately);
       default:
         return state;
@@ -57,27 +60,35 @@ const useQuery = ({
   // Query logic
   //*******************************************
   const executeQuery = (data = {}, params = {}) => {
-    cancelRequest.current = false;
-    dispatch({ status: status.LOADING });
+    if (!apiClient) throw new Error("apiClient is not defined");
 
-    apiClient({ url: url, method: method, data: data, params: params, ...clientOptions })
+    cancelRequest.current = false;
+    dispatch({ status: Status.LOADING });
+
+    apiClient({
+      url: url,
+      method: method,
+      data: data,
+      params: params,
+      ...clientOptions,
+    })
       .then((response) => {
         if (cancelRequest.current) return;
 
-        dispatch({ status: status.SUCCESS, payload: response });
+        dispatch({ status: Status.SUCCESS, payload: response });
         try {
           onSuccess(response);
-        }
-        catch (e) {
+        } catch (e) {
           console.error(e);
         }
       })
       .catch((error) => {
         if (cancelRequest.current) return;
 
-        dispatch({ status: status.ERROR, payload: error });
+        dispatch({ status: Status.ERROR, payload: error });
 
-        const onUnauthorizedFunction = onUnauthorized !== undefined ? onUnauthorized : defaultOnUnauthorized;
+        const onUnauthorizedFunction =
+          onUnauthorized !== undefined ? onUnauthorized : defaultOnUnauthorized;
         if (
           error.response &&
           error.response.status === 401 &&
@@ -91,7 +102,7 @@ const useQuery = ({
   };
 
   const resetQuery = () => {
-    dispatch({ status: actions.RESET });
+    dispatch({ status: Actions.RESET });
   };
 
   useEffect(() => {
@@ -102,14 +113,12 @@ const useQuery = ({
   }, [url]);
 
   return {
-    isLoading: state.status === status.LOADING,
-    isError: state.status === status.ERROR,
-    isSuccess: state.status === status.SUCCESS,
+    isLoading: state.status === Status.LOADING,
+    isError: state.status === Status.ERROR,
+    isSuccess: state.status === Status.SUCCESS,
     response: state.response,
     error: state.error,
     executeQuery: executeQuery,
     resetQuery: resetQuery,
   };
 };
-
-export default useQuery;

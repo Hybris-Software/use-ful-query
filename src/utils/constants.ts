@@ -1,12 +1,10 @@
-const status = {
+export const Status = {
   IDLE: "idle",
   LOADING: "loading",
   SUCCESS: "success",
   ERROR: "error",
 };
 
-const actions = {
+export const Actions = {
   RESET: "reset",
 };
-
-export { status, actions };
