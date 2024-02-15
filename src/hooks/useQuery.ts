@@ -25,7 +25,7 @@ export const useQuery = ({
   //*******************************************
   // Reducer
   //*******************************************
-  const queryReducer = (state, action) => {
+  const queryReducer = (state: any, action: any) => {
     switch (action.status) {
       case Status.LOADING:
         return {
