@@ -1,5 +1,5 @@
 {
-  "name": "@hybris-software/use-query",
+  "name": "@hybris-software/use-ful-query",
   "version": "3.0.0",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.mjs",
