@@ -1,8 +1,12 @@
 import { useReducer, useEffect, useRef, useContext } from "react";
 import { ApiProviderContext } from "../context/apiProviderContext";
-import { Status, Actions } from "../utils/constants";
-import { generateQueryInitialState } from "../utils/states";
-import { UseQueryProps, ApiProviderContextData } from "../types";
+import { Status } from "../utils/constants";
+import {
+  UseQueryProps,
+  ApiProviderContextData,
+  QueryState,
+  QueryActions,
+} from "../types";
 
 export const useQuery = ({
   url,
@@ -25,41 +29,47 @@ export const useQuery = ({
   //*******************************************
   // Reducer
   //*******************************************
-  const queryReducer = (state: any, action: any) => {
+  const queryReducer = (state: QueryState, action: QueryActions) => {
     switch (action.status) {
       case Status.LOADING:
         return {
-          ...generateQueryInitialState(executeImmediately),
-          status: Status.LOADING,
+          status: action.status,
+          response: undefined,
+          error: undefined,
         };
       case Status.SUCCESS:
         return {
-          ...generateQueryInitialState(executeImmediately),
-          status: Status.SUCCESS,
+          status: action.status,
           response: action.payload,
+          error: undefined,
         };
       case Status.ERROR:
         return {
-          ...generateQueryInitialState(executeImmediately),
-          status: Status.ERROR,
+          status: action.status,
+          response: undefined,
           error: action.payload,
         };
-      case Actions.RESET:
-        return generateQueryInitialState(executeImmediately);
+      case Status.IDLE:
+        return {
+          status: action.status,
+          response: undefined,
+          error: undefined,
+        };
       default:
-        return state;
+        throw new Error("Invalid action");
     }
   };
 
-  const [state, dispatch] = useReducer(
-    queryReducer,
-    generateQueryInitialState(executeImmediately)
-  );
+  const [state, dispatch] = useReducer(queryReducer, {
+    response: undefined,
+    error: undefined,
+    status: executeImmediately ? Status.LOADING : Status.IDLE,
+  });
 
   //*******************************************
   // Query logic
   //*******************************************
-  const executeQuery = (data = {}, params = {}) => {
+  const _executeQuery = (url: string, data: any, params: any) => {
     if (!apiClient) throw new Error("apiClient is not defined");
 
     // Use the queryId to make sure that the response is for the latest query
@@ -92,6 +102,7 @@ export const useQuery = ({
 
         const onUnauthorizedFunction =
           onUnauthorized !== undefined ? onUnauthorized : defaultOnUnauthorized;
+
         if (
           error.response &&
           error.response.status === 401 &&
@@ -104,12 +115,17 @@ export const useQuery = ({
       });
   };
 
+  const executeQuery = (data = {}, params = {}) => {
+    return _executeQuery(url, data, params);
+  };
+
   const resetQuery = () => {
-    dispatch({ status: Actions.RESET });
+    requestId.current = null;
+    dispatch({ status: Status.IDLE });
   };
 
   useEffect(() => {
-    if (executeImmediately) executeQuery();
+    if (executeImmediately) _executeQuery(url, {}, {});
   }, [url]);
 
   return {

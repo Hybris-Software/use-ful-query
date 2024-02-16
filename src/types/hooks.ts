@@ -9,3 +9,14 @@ export type UseQueryProps = {
   onUnauthorized: any; //TODO
   clientOptions: AxiosRequestConfig;
 };
+
+export type QueryState = {
+  status: string;
+  response?: any;
+  error?: any;
+};
+
+export type QueryActions = {
+  status: string;
+  payload?: any;
+};

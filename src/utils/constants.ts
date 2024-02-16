@@ -4,7 +4,3 @@ export const Status = {
   SUCCESS: "success",
   ERROR: "error",
 };
-
-export const Actions = {
-  RESET: "reset",
-};
