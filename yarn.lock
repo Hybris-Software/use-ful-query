@@ -5,9 +5,9 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@hybris-software/use-query@workspace:.":
+"@hybris-software/use-ful-query@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@hybris-software/use-query@workspace:."
+  resolution: "@hybris-software/use-ful-query@workspace:."
   dependencies:
     "@rollup/plugin-commonjs": "npm:^25.0.7"
     "@rollup/plugin-node-resolve": "npm:^15.2.3"

@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios";
 
 export type ApiProviderContextData = {
   apiClient: AxiosInstance | null;
-  onUnauthorized: any; // TODO
+  onUnauthorized?: any; // TODO
 };
 
 export type ApiProviderProps = ApiProviderContextData & {
