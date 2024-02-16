@@ -132,6 +132,7 @@ export const useQuery = ({
     isLoading: state.status === Status.LOADING,
     isError: state.status === Status.ERROR,
     isSuccess: state.status === Status.SUCCESS,
+    status: state.status,
     response: state.response,
     error: state.error,
     data: state.status === Status.SUCCESS ? state.response.data : undefined,
