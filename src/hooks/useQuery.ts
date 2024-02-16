@@ -20,7 +20,7 @@ export const useQuery = ({
     apiClient,
     onUnauthorized: defaultOnUnauthorized,
   }: ApiProviderContextData = useContext(ApiProviderContext);
-  const cancelRequest = useRef(false);
+  const requestId = useRef<string | null>(null);
 
   //*******************************************
   // Reducer
@@ -62,7 +62,10 @@ export const useQuery = ({
   const executeQuery = (data = {}, params = {}) => {
     if (!apiClient) throw new Error("apiClient is not defined");
 
-    cancelRequest.current = false;
+    // Use the queryId to make sure that the response is for the latest query
+    const queryId = Math.random().toString(36).substring(7);
+    requestId.current = queryId;
+
     dispatch({ status: Status.LOADING });
 
     apiClient({
@@ -73,7 +76,7 @@ export const useQuery = ({
       ...clientOptions,
     })
       .then((response) => {
-        if (cancelRequest.current) return;
+        if (requestId.current !== queryId) return;
 
         dispatch({ status: Status.SUCCESS, payload: response });
         try {
@@ -83,7 +86,7 @@ export const useQuery = ({
         }
       })
       .catch((error) => {
-        if (cancelRequest.current) return;
+        if (requestId.current !== queryId) return;
 
         dispatch({ status: Status.ERROR, payload: error });
 
@@ -107,9 +110,6 @@ export const useQuery = ({
 
   useEffect(() => {
     if (executeImmediately) executeQuery();
-    return () => {
-      cancelRequest.current = true;
-    };
   }, [url]);
 
   return {
