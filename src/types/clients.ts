@@ -5,4 +5,5 @@ export type ApiClientProps = {
   authorizationPrefix?: string;
   localStorageKey?: string;
   acceptLanguage?: string;
+  withCredentials?: boolean;
 };

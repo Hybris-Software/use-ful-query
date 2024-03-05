@@ -8,6 +8,7 @@ export function generateApiClient({
   authorizationPrefix = "Bearer ",
   localStorageKey = "token",
   acceptLanguage = "en-en",
+  withCredentials = false,
 }: ApiClientProps) {
   const apiClient = axios.create({
     baseURL: baseUrl,
@@ -43,6 +44,8 @@ export function generateApiClient({
       return Promise.reject(error);
     }
   );
+
+  apiClient.defaults.withCredentials = withCredentials;
 
   return apiClient;
 }
