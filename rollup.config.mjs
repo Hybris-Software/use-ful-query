@@ -1,13 +1,13 @@
-import terser from "@rollup/plugin-terser";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
-import postcss from "rollup-plugin-postcss";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import terser from "@rollup/plugin-terser"
+import resolve from "@rollup/plugin-node-resolve"
+import commonjs from "@rollup/plugin-commonjs"
+import typescript from "@rollup/plugin-typescript"
+import postcss from "rollup-plugin-postcss"
+import peerDepsExternal from "rollup-plugin-peer-deps-external"
 
-import pkg from "./package.json" assert { type: "json" };
+import pkg from "./package.json" assert { type: "json" }
 
-const extensions = [".js", ".jsx", ".ts", ".tsx"];
+const extensions = [".js", ".jsx", ".ts", ".tsx"]
 
 export default [
   {
@@ -40,4 +40,4 @@ export default [
       terser(),
     ],
   },
-];
+]

@@ -1,19 +1,19 @@
-import { generateApiClient, useQuery } from "use-ful-query";
+import { generateApiClient, useQuery } from "use-ful-query"
 
 export default function NoContext() {
-  return <PageContent />;
+  return <PageContent />
 }
 
 function PageContent() {
   const apiClient = generateApiClient({
     baseUrl: "https://jsonplaceholder.typicode.com",
-  });
+  })
 
   const { data, isLoading } = useQuery({
     url: "/posts",
     executeImmediately: true,
     apiClient: apiClient,
-  });
+  })
 
   return (
     <div>
@@ -30,5 +30,5 @@ function PageContent() {
         ))
       )}
     </div>
-  );
+  )
 }

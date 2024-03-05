@@ -72,33 +72,33 @@ const apiClient = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-});
+})
 
 apiClient.interceptors.request.use(
   function (config) {
-    config.headers = config.headers || {};
+    config.headers = config.headers || {}
     const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
+      localStorage.getItem("token") || sessionStorage.getItem("token")
     if (token) {
-      config.headers[authorizationHeader] = `${authorizationPrefix}${token}`;
+      config.headers[authorizationHeader] = `${authorizationPrefix}${token}`
     }
-    config.headers["Content-Type"] = "application/json";
-    config.headers["Accept"] = "application/json";
-    return config;
+    config.headers["Content-Type"] = "application/json"
+    config.headers["Accept"] = "application/json"
+    return config
   },
   function (error) {
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-);
+)
 
 apiClient.interceptors.response.use(
   function (response) {
-    return response;
+    return response
   },
   function (error) {
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-);
+)
 ```
 
 ## 4 - generateJwtApiClient
@@ -208,11 +208,11 @@ const { isLoading, isSuccess, data, error } = useQuery({
   url: "api/v1/userinfo/",
   method: "GET",
   executeImmediately: true,
-});
+})
 
-if (isLoading) return <Loader />;
-else if (isSuccess) return <UserInfo data={data} />;
-else return <Error error={error} />;
+if (isLoading) return <Loader />
+else if (isSuccess) return <UserInfo data={data} />
+else return <Error error={error} />
 ```
 
 ### 6.3 - Example with useMultipleQueries
@@ -223,30 +223,30 @@ const { queries } = useMultipleQueries({
     query1: {
       url: "https://jsonplaceholder.typicode.com/todos/1",
       onSuccess: (response) => {
-        console.log("query1", response);
+        console.log("query1", response)
       },
     },
     query2: {
       url: "https://jsonplaceholder.typicode.com/todos/2",
       onError: (error) => {
-        console.log("query2 error", error);
+        console.log("query2 error", error)
       },
       onSuccess: (response) => {
-        console.log("query2 success", response);
+        console.log("query2 success", response)
       },
     },
     query3: {
       url: "https://wrongdomain/todos/3",
       onError: (error) => {
-        console.log("query3", error);
+        console.log("query3", error)
       },
     },
   },
   executeImmediately: true,
   onEnd: () => {
-    console.log("All done");
+    console.log("All done")
   },
-});
+})
 ```
 
 ### 7.3 - Example with JWT

@@ -1,5 +1,5 @@
-import axios from "axios";
-import { ApiClientProps } from "../types";
+import axios from "axios"
+import { ApiClientProps } from "../types"
 
 export function generateApiClient({
   baseUrl = "",
@@ -18,34 +18,34 @@ export function generateApiClient({
       Accept: "application/json",
       "Accept-Language": acceptLanguage,
     },
-  });
+  })
 
   apiClient.interceptors.request.use(
     function (config) {
-      config.headers = config.headers || {};
+      config.headers = config.headers || {}
       const token =
         localStorage.getItem(localStorageKey) ||
-        sessionStorage.getItem(localStorageKey);
+        sessionStorage.getItem(localStorageKey)
       if (token) {
-        config.headers[authorizationHeader] = `${authorizationPrefix}${token}`;
+        config.headers[authorizationHeader] = `${authorizationPrefix}${token}`
       }
-      return config;
+      return config
     },
     function (error) {
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
-  );
+  )
 
   apiClient.interceptors.response.use(
     function (response) {
-      return response;
+      return response
     },
     function (error) {
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
-  );
+  )
 
-  apiClient.defaults.withCredentials = withCredentials;
+  apiClient.defaults.withCredentials = withCredentials
 
-  return apiClient;
+  return apiClient
 }

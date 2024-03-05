@@ -1,6 +1,6 @@
-import React from "react";
-import { ApiProviderContext } from "../context/apiProviderContext";
-import { ApiProviderProps } from "../types";
+import React from "react"
+import { ApiProviderContext } from "../context/apiProviderContext"
+import { ApiProviderProps } from "../types"
 
 export const ApiProvider = ({
   children,
@@ -11,5 +11,5 @@ export const ApiProvider = ({
     <ApiProviderContext.Provider value={{ apiClient, onUnauthorized }}>
       {children}
     </ApiProviderContext.Provider>
-  );
-};
+  )
+}

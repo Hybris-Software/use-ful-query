@@ -1,8 +1,8 @@
-import { useQuery } from "./hooks/useQuery";
+import { useQuery } from "./hooks/useQuery"
 
-export * from "./types";
-export * from "./utils";
-export * from "./hooks/useQuery";
-export * from "./components";
+export * from "./types"
+export * from "./utils"
+export * from "./hooks/useQuery"
+export * from "./components"
 
-export default useQuery;
+export default useQuery

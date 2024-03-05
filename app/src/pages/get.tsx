@@ -1,22 +1,22 @@
-import { ApiProvider, generateApiClient, useQuery } from "use-ful-query";
+import { ApiProvider, generateApiClient, useQuery } from "use-ful-query"
 
 export default function Get() {
   const apiClient = generateApiClient({
     baseUrl: "https://jsonplaceholder.typicode.com",
-  });
+  })
 
   return (
     <ApiProvider apiClient={apiClient}>
       <PageContent />
     </ApiProvider>
-  );
+  )
 }
 
 function PageContent() {
   const { data, isLoading } = useQuery({
     url: "/posts",
     executeImmediately: true,
-  });
+  })
 
   return (
     <div>
@@ -33,5 +33,5 @@ function PageContent() {
         ))
       )}
     </div>
-  );
+  )
 }

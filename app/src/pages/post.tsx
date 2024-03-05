@@ -1,25 +1,25 @@
-import { useState } from "react";
-import { ApiProvider, generateApiClient, useQuery } from "use-ful-query";
+import { useState } from "react"
+import { ApiProvider, generateApiClient, useQuery } from "use-ful-query"
 
 export default function Post() {
   const apiClient = generateApiClient({
     baseUrl: "https://jsonplaceholder.typicode.com",
-  });
+  })
 
   return (
     <ApiProvider apiClient={apiClient}>
       <PageContent />
     </ApiProvider>
-  );
+  )
 }
 
 function PageContent() {
   const { data, status, executeQuery } = useQuery({
     url: "/posts",
     method: "POST",
-  });
+  })
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("")
 
   return (
     <div>
@@ -33,5 +33,5 @@ function PageContent() {
       <p>Status: {status}</p>
       <p>Response: {JSON.stringify(data)}</p>
     </div>
-  );
+  )
 }

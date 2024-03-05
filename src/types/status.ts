@@ -1,3 +1,3 @@
-import { Status } from "../utils/constants";
+import { Status } from "../utils/constants"
 
-export type TStatus = (typeof Status)[keyof typeof Status];
+export type TStatus = (typeof Status)[keyof typeof Status]

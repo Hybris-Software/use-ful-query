@@ -1,5 +1,5 @@
-import routes from "./routes";
-import { Link } from "react-router-dom";
+import routes from "./routes"
+import { Link } from "react-router-dom"
 
 export function HomePage() {
   return (
@@ -13,5 +13,5 @@ export function HomePage() {
         ))}
       </ul>
     </div>
-  );
+  )
 }
