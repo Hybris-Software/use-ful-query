@@ -11,7 +11,7 @@ const router = createBrowserRouter(
     .map((route) => {
       return {
         path: route.path,
-        element: route.element,
+        element: <route.element />,
       };
     })
     .concat({

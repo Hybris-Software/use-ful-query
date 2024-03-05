@@ -1,7 +1,19 @@
 import { useState } from "react";
-import { useQuery } from "use-ful-query";
+import { ApiProvider, generateApiClient, useQuery } from "use-ful-query";
 
 export default function Post() {
+  const apiClient = generateApiClient({
+    baseUrl: "https://jsonplaceholder.typicode.com",
+  });
+
+  return (
+    <ApiProvider apiClient={apiClient}>
+      <PageContent />
+    </ApiProvider>
+  );
+}
+
+function PageContent() {
   const { data, status, executeQuery } = useQuery({
     url: "/posts",
     method: "POST",

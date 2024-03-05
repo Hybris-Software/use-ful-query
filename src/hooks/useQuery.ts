@@ -16,15 +16,22 @@ export const useQuery = ({
   onError = () => {},
   onUnauthorized = undefined,
   clientOptions = {},
+  apiClient,
 }: UseQueryProps) => {
   //*******************************************
   // States
   //*******************************************
   const {
-    apiClient,
+    apiClient: contextApiClient,
     onUnauthorized: defaultOnUnauthorized,
   }: ApiProviderContextData = useContext(ApiProviderContext);
   const requestId = useRef<string | null>(null);
+
+  //*******************************************
+  // Variables
+  //*******************************************
+
+  const _apiClient = apiClient || contextApiClient;
 
   //*******************************************
   // Reducer
@@ -70,7 +77,7 @@ export const useQuery = ({
   // Query logic
   //*******************************************
   const _executeQuery = (url: string, data: any, params: any) => {
-    if (!apiClient) throw new Error("apiClient is not defined");
+    if (!_apiClient) throw new Error("apiClient is not defined");
 
     // Use the queryId to make sure that the response is for the latest query
     const queryId = Math.random().toString(36).substring(7);
@@ -78,7 +85,7 @@ export const useQuery = ({
 
     dispatch({ status: Status.LOADING });
 
-    apiClient({
+    _apiClient({
       url: url,
       method: method,
       data: data,

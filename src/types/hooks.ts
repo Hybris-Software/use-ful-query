@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from "axios";
+import { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export type UseQueryProps = {
   url: string;
@@ -8,6 +8,7 @@ export type UseQueryProps = {
   onError?: any; //TODO
   onUnauthorized?: any; //TODO
   clientOptions?: AxiosRequestConfig;
+  apiClient?: AxiosInstance;
 };
 
 export type QueryState = {

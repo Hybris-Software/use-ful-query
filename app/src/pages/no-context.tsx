@@ -1,21 +1,18 @@
-import { ApiProvider, generateApiClient, useQuery } from "use-ful-query";
+import { generateApiClient, useQuery } from "use-ful-query";
 
-export default function Get() {
+export default function NoContext() {
+  return <PageContent />;
+}
+
+function PageContent() {
   const apiClient = generateApiClient({
     baseUrl: "https://jsonplaceholder.typicode.com",
   });
 
-  return (
-    <ApiProvider apiClient={apiClient}>
-      <PageContent />
-    </ApiProvider>
-  );
-}
-
-function PageContent() {
   const { data, isLoading } = useQuery({
     url: "/posts",
     executeImmediately: true,
+    apiClient: apiClient,
   });
 
   return (
