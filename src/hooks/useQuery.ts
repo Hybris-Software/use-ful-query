@@ -1,6 +1,6 @@
 import { useReducer, useEffect, useRef, useContext } from "react"
 import { ApiProviderContext } from "../context/apiProviderContext"
-import { Status } from "../utils/constants"
+import { Status, generateApiClient } from "../utils"
 import {
   UseQueryProps,
   ApiProviderContextData,
@@ -31,7 +31,7 @@ export const useQuery = ({
   // Variables
   //*******************************************
 
-  const _apiClient = apiClient || contextApiClient
+  const _apiClient = apiClient || contextApiClient || generateApiClient({})
 
   //*******************************************
   // Reducer
@@ -76,12 +76,21 @@ export const useQuery = ({
   //*******************************************
   // Query logic
   //*******************************************
-  const _executeQuery = (url: string, data: any, params: any) => {
+  const _executeQuery = (
+    url: string | null | undefined,
+    data: any,
+    params: any
+  ) => {
     if (!_apiClient) throw new Error("apiClient is not defined")
 
     // Use the queryId to make sure that the response is for the latest query
     const queryId = Math.random().toString(36).substring(7)
     requestId.current = queryId
+
+    if (url === undefined || url === null) {
+      dispatch({ status: Status.IDLE })
+      return
+    }
 
     dispatch({ status: Status.LOADING })
 

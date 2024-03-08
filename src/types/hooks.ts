@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosRequestConfig } from "axios"
 
 export type UseQueryProps = {
-  url: string
+  url?: string
   method?: string
   executeImmediately?: boolean
   onSuccess?: any //TODO

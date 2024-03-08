@@ -1,5 +1,5 @@
 export type ApiClientProps = {
-  baseUrl: string
+  baseUrl?: string
   timeout?: number
   authorizationHeader?: string
   authorizationPrefix?: string

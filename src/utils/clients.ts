@@ -2,7 +2,7 @@ import axios from "axios"
 import { ApiClientProps } from "../types"
 
 export function generateApiClient({
-  baseUrl = "",
+  baseUrl,
   timeout = 5000,
   authorizationHeader = "Authorization",
   authorizationPrefix = "Bearer ",
