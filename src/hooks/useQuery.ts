@@ -12,9 +12,9 @@ export const useQuery = ({
   url,
   method = "GET",
   executeImmediately = false,
-  onSuccess = () => {},
-  onError = () => {},
-  onUnauthorized = undefined,
+  onSuccess: _onSuccess = () => {},
+  onError: _onError = () => {},
+  onUnauthorized: _onUnauthorized = undefined,
   clientOptions = {},
   apiClient,
 }: UseQueryProps) => {
@@ -24,7 +24,10 @@ export const useQuery = ({
   const {
     apiClient: contextApiClient,
     onUnauthorized: defaultOnUnauthorized,
+    onError: defaultOnError,
+    onSuccess: defaultOnSuccess,
   }: ApiProviderContextData = useContext(ApiProviderContext)
+
   const requestId = useRef<string | null>(null)
 
   //*******************************************
@@ -32,6 +35,10 @@ export const useQuery = ({
   //*******************************************
 
   const _apiClient = apiClient || contextApiClient || generateApiClient({})
+
+  const onSuccess = _onSuccess || defaultOnSuccess
+  const onError = _onError || defaultOnError
+  const onUnauthorized = _onUnauthorized || defaultOnUnauthorized
 
   //*******************************************
   // Reducer
@@ -116,15 +123,8 @@ export const useQuery = ({
 
         dispatch({ status: Status.ERROR, payload: error })
 
-        const onUnauthorizedFunction =
-          onUnauthorized !== undefined ? onUnauthorized : defaultOnUnauthorized
-
-        if (
-          error.response &&
-          error.response.status === 401 &&
-          onUnauthorizedFunction
-        ) {
-          onUnauthorizedFunction(error)
+        if (error.response && error.response.status === 401 && onUnauthorized) {
+          onUnauthorized(error)
         } else {
           onError(error)
         }
