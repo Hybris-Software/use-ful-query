@@ -2,10 +2,10 @@ import { createContext } from "react"
 import { ApiProviderContextData } from "../types"
 
 const defaultApiProviderContextData: ApiProviderContextData = {
-  apiClient: null,
-  onUnauthorized: null,
-  onError: null,
-  onSuccess: null,
+  apiClient: undefined,
+  onUnauthorized: undefined,
+  onError: undefined,
+  onSuccess: undefined,
 }
 
 export const ApiProviderContext = createContext<ApiProviderContextData>(

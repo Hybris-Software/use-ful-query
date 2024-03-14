@@ -9,9 +9,9 @@ export type UseQueryProps = {
   url?: string
   method?: string
   executeImmediately?: boolean
-  onSuccess?: (response: AxiosResponse) => void
-  onUnauthorized?: (error: AxiosError) => void
-  onError?: (error: Error | AxiosError) => void
+  onSuccess?: ((response: AxiosResponse) => void) | null
+  onUnauthorized?: ((error: AxiosError) => void) | null
+  onError?: ((error: Error | AxiosError) => void) | null
   clientOptions?: AxiosRequestConfig
   apiClient?: AxiosInstance
 }

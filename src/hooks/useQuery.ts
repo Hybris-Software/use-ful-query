@@ -13,9 +13,9 @@ export const useQuery = ({
   url,
   method = "GET",
   executeImmediately = false,
-  onSuccess: _onSuccess = () => {},
-  onError: _onError = () => {},
-  onUnauthorized: _onUnauthorized = undefined,
+  onSuccess: _onSuccess,
+  onError: _onError,
+  onUnauthorized: _onUnauthorized,
   clientOptions = {},
   apiClient,
 }: UseQueryProps): UseQueryReturn => {
@@ -24,9 +24,9 @@ export const useQuery = ({
   //*******************************************
   const {
     apiClient: contextApiClient,
-    onUnauthorized: defaultOnUnauthorized,
-    onError: defaultOnError,
-    onSuccess: defaultOnSuccess,
+    onUnauthorized: contextOnUnauthorized,
+    onError: contextOnError,
+    onSuccess: contextOnSuccess,
   }: ApiProviderContextData = useContext(ApiProviderContext)
 
   const requestId = useRef<string | null>(null)
@@ -37,9 +37,10 @@ export const useQuery = ({
 
   const _apiClient = apiClient || contextApiClient || generateApiClient({})
 
-  const onSuccess = _onSuccess || defaultOnSuccess
-  const onError = _onError || defaultOnError
-  const onUnauthorized = _onUnauthorized || defaultOnUnauthorized
+  const onSuccess = _onSuccess !== undefined ? _onSuccess : contextOnSuccess
+  const onError = _onError !== undefined ? _onError : contextOnError
+  const onUnauthorized =
+    _onUnauthorized !== undefined ? _onUnauthorized : contextOnUnauthorized
 
   //*******************************************
   // Reducer
@@ -84,11 +85,7 @@ export const useQuery = ({
   //*******************************************
   // Query logic
   //*******************************************
-  const _executeQuery = (
-    url: string | null | undefined,
-    data: any,
-    params: any
-  ) => {
+  const executeQuery = (data?: any, params?: any) => {
     if (!_apiClient) throw new Error("apiClient is not defined")
 
     // Use the queryId to make sure that the response is for the latest query
@@ -114,7 +111,7 @@ export const useQuery = ({
 
         dispatch({ status: Status.SUCCESS, payload: response })
         try {
-          onSuccess(response)
+          if (onSuccess) onSuccess(response)
         } catch (e) {
           console.error(e)
         }
@@ -127,13 +124,9 @@ export const useQuery = ({
         if (error.response && error.response.status === 401 && onUnauthorized) {
           onUnauthorized(error)
         } else {
-          onError(error)
+          if (onError) onError(error)
         }
       })
-  }
-
-  const executeQuery = (data = {}, params = {}) => {
-    return _executeQuery(url, data, params)
   }
 
   const resetQuery = () => {
@@ -142,7 +135,7 @@ export const useQuery = ({
   }
 
   useEffect(() => {
-    if (executeImmediately) _executeQuery(url, {}, {})
+    if (executeImmediately) executeQuery()
   }, [url])
 
   return {

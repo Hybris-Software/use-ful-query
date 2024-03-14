@@ -1,35 +1,36 @@
-# useQuery
+# use-ful-query
 
-- [Introduction](#introduction)
-- [Installation](#installation)
-- [useQuery](#usequery-1)
-  - [Parameters](#parameters)
-  - [Returned parameters](#returned-parameters)
-- [generateApiClient](#generateapiclient)
-  - [Parameters](#parameters-1)
-- [generateJwtApiClient](#generatejwtapiclient)
-  - [Parameters](#parameters-2)
-- [Examples](#examples)
-  - [Example 1](#example-1)
-  - [Example 2](#example-2)
-  - [Example with JWT](#examplewithjwt)
+- [Introduction](#1-Introduction)
+- [Installation](#2-Installation)
+- [Configuration](#3-Configuration)
+- [generateApiClient](#4-generateApiClient)
+  - [Parameters](#4.1-Parameters)
+- [useQuery](#5-useQuery)
+  - [Parameters](#5.1-Parameters)
+  - [Returned values](#5.2-Returnedvalues)
+- [ApiProvider](#6-ApiProvider)
+  - [Parameters](#6.1-Parameters)
 
 ## 1 - Introduction
 
-This hook can be used to perform queries to an endpoint. Allows easy management of operations and query status.
+This hook can be used to perform queries to an endpoint. Facilitates easy management of operations and tracks query status.
 
 It requires an Axios client. This library already provides the `generateApiClient` function which returns a client with a variable base url and an interceptor to send an authentication header. You may also create an axios client by your own.
 
 ## 2 - Installation
 
-Install the library with `npm install @hybris-software/use-query`.
+Install the library with `npm install @hybris-software/use-ful-query`.
 
-At the upper level of the application you should also insert the `ApiProvider` component which requires an `apiClient` prop. It should be an Axios client which you can create by your own or use `generateApiClient` to generate one.
+## 3 - Configuration
 
-Here is an example:
+In case you want to use some default parameters you can use a context instead of passing the parameter in every query. It is not required but highly recommended.
 
-```javascript
-import { generateApiClient, ApiProvider } from "@hybris-software/use-query";
+At the top level of the application, insert the `ApiProvider` component and pass the default props as explained in the section below.
+
+In this example, if you want to use the same API client throughout the project, you need to generate an `axios` client (either on your own or using the `generateApiClient` helper function) and pass it to the `ApiProvider` through the `apiClient` property.
+
+```typescript
+import { generateApiClient, ApiProvider } from "@hybris-software/use-ful-query";
 ...
 const apiClient = generateApiClient({
   baseUrl: "https://my.api.com/api/v1",
@@ -46,232 +47,60 @@ root.render(
 );
 ```
 
-## 3 - generateApiClient
-
-This function returns an Axios client with the possibility to set a `baseUrl`, and an authorization header. It gets the authorization token from `localStorage` or `sessionStorage` with the key `token`.
-
-### 3.1 - Parameters
-
-| Parameter           | Type   | Default         | Description                                                                                       |
-| ------------------- | ------ | --------------- | ------------------------------------------------------------------------------------------------- |
-| baseUrl             | string |                 | Axios base url                                                                                    |
-| timeout             | number | 5000            | Default timeout (milliseconds)                                                                    |
-| authorizationHeader | string | "Authorization" | Authorization header name                                                                         |
-| authorizationPrefix | string | "Bearer "       | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage` |
-| localStorageKey     | string | "token"         | Local storage key that contains the authentication token                                          |
-
-### 3.2 - Our api client
-
-This is what `generateApiClient` generates, you can use it as a base to create your own api client.
-
-```javascript
-const apiClient = axios.create({
-  baseURL: baseUrl,
-  timeout: 5000,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-})
-
-apiClient.interceptors.request.use(
-  function (config) {
-    config.headers = config.headers || {}
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token")
-    if (token) {
-      config.headers[authorizationHeader] = `${authorizationPrefix}${token}`
-    }
-    config.headers["Content-Type"] = "application/json"
-    config.headers["Accept"] = "application/json"
-    return config
-  },
-  function (error) {
-    return Promise.reject(error)
-  }
-)
-
-apiClient.interceptors.response.use(
-  function (response) {
-    return response
-  },
-  function (error) {
-    return Promise.reject(error)
-  }
-)
-```
-
-## 4 - generateJwtApiClient
+## 4 - generateApiClient
 
 This function returns an Axios client with the possibility to set a `baseUrl`, and an authorization header. It gets the authorization token from `localStorage` or `sessionStorage` with the key `token`.
 
 ### 4.1 - Parameters
 
-| Parameter                   | Type     | Default         | Description                                                                                                                |
-| --------------------------- | -------- | --------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| baseUrl                     | string   |                 | Axios base url                                                                                                             |
-| timeout                     | number   | 5000            | Default timeout (milliseconds)                                                                                             |
-| authorizationHeader         | string   | "Authorization" | Authorization header name                                                                                                  |
-| authorizationPrefix         | string   | "Bearer "       | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage`                          |
-| accessTokenLocalStorageKey  | string   | "accessToken"   | Local storage key that contains the access token                                                                           |
-| refreshTokenLocalStorageKey | string   | "refreshToken"  | Local storage key that contains the refresh token                                                                          |
-| refreshTokenFunction        | function |                 | An asyncronous function that receives the old access token and refresh token and returns [newAccessToken, newRefreshToken] |
+| Parameter           | Type              | Default         | Description                                                                                       |
+| ------------------- | ----------------- | --------------- | ------------------------------------------------------------------------------------------------- |
+| baseUrl             | string (optional) |                 | Axios base url                                                                                    |
+| timeout             | number (optional) | 5000            | Default query timeout (milliseconds)                                                              |
+| authorizationHeader | string (optional) | "Authorization" | Authorization header name                                                                         |
+| authorizationPrefix | string (optional) | "Bearer "       | The authorization header prefix, for example `Authorization: Bearer your_token_from_localstorage` |
+| localStorageKey     | string (optional) | "token"         | Local storage key that contains the authentication token                                          |
 
 ## 5 - useQuery
 
-This hook performs only one query, if you have to perform multiple queries in parallel you can call multiple times `useQuery` or use `useMultipleQueries` as described below.
-
 ### 5.1 - Parameters
 
-| Parameter          | Type                 | Default     | Description                                                                                                                                                                                                                                                                                |
-| ------------------ | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| url                | string               |             | Endpoint url                                                                                                                                                                                                                                                                               |
-| method             | string               | 'GET'       | Request method (GET, POST...)                                                                                                                                                                                                                                                              |
-| executeImmediately | boolean              | false       | Sets whether the call should be executed when the component is created or wait for the call to `executeQuery()`                                                                                                                                                                            |
-| onSuccess          | `(response) => void` | `() => { }` | Function executed after a successful query                                                                                                                                                                                                                                                 |
-| onUnauthorized     | `(error) => void`    | undefined   | Function executed after an unsuccessful query if the response code is 401 (optional, see `onError`). The default function is the one defined in the `ApiProvider` if it is not specified in useQuery. To disable the default one and not use an `onUnauthorized` set `onUnauthorized=null` |
-| onError            | `(error) => void`    | `() => { }` | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code                                                                                                                                                                         |
-| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                                                                                                                                                                                                 |
+| Parameter          | Type                                              | Default | Description                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------ | ------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| url                | string (optional)                                 |         | Endpoint url. If the value is null, the query will not be executed.                                                                                                                                                                                                                                                                                         |
+| method             | string (optional)                                 | 'GET'   | Request method (GET, POST...)                                                                                                                                                                                                                                                                                                                               |
+| executeImmediately | boolean (optional)                                | false   | Sets whether the call should be executed when the component gets mounted or wait for the call to `executeQuery()`                                                                                                                                                                                                                                           |
+| onSuccess          | `(response: AxiosResponse) => void` (optional)    |         | Function executed after a successful query. The default function is the one defined in the `ApiProvider` if it is not specified in `useQuery`. To disable the default one and not use an `onSuccess` set `onSuccess=null`                                                                                                                                   |
+| onUnauthorized     | `(error: AxiosError) => void` (optional)          |         | Function executed after an unsuccessful query if the response code is 401. If this function is not defined, the error will be handled by the generic `onError` one. The default function is the one defined in the `ApiProvider` if it is not specified in `useQuery`. To disable the default one and not use an `onUnauthorized` set `onUnauthorized=null` |
+| onError            | `(error: Error \| AxiosError) => void` (optional) |         | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code. The default function is the one defined in the `ApiProvider` if it is not specified in `useQuery`. To disable the default one and not use an `onError` set `onError=null`                                                               |
+| clientOptions      | object (optional)                                 |         | Extra Axios query options, ex. `{timeout: 1000}`                                                                                                                                                                                                                                                                                                            |
+| apiClient          | AxiosInstance (optional)                          |         | The Axios client that will be used to call the API. By default is the one specified in the context but can be overwritten by adding `apiClient` to `useQuery`. It is also useful if the context does not exist at all.                                                                                                                                      |
 
-### 5.2 - Returned parameters
+### 5.2 - Returned values
 
-| Parameter    | Type                  | Description                                                                                                                                    |
-| ------------ | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| isLoading    | boolean               | `true` while the query is being executed, `false` otherwise, even if it has not yet started                                                    |
-| isError      | boolean               | `true` while the query finished unsuccessfully, `false` otherwise                                                                              |
-| isSuccess    | boolean               | `true` while the query finished successfully, `false` otherwise                                                                                |
-| response     | any                   | The query response if it finished successfully, `undefined` otherwise                                                                          |
-| error        | any                   | The generated error if the query finished unsuccessfully, `undefined` otherwise. If it got a response, it can be accessed via `error.response` |
-| executeQuery | `(data?: {}) => void` | Trigger the query with optional body as parameter                                                                                              |
+| Parameter    | Type                                 | Description                                                                                                                                                         |
+| ------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| isLoading    | boolean                              | `true` while the query is being executed, `false` otherwise, even if it has not yet started                                                                         |
+| isError      | boolean                              | `true` while the query finished unsuccessfully, `false` otherwise                                                                                                   |
+| isSuccess    | boolean                              | `true` while the query finished successfully, `false` otherwise                                                                                                     |
+| status       | Status (string)                      | `idle \| loading \| success \| error`                                                                                                                               |
+| response     | any \| undefined                     | The query response if it finished successfully, `undefined` otherwise                                                                                               |
+| error        | Error \| AxiosError \| undefined     | The generated error if the query finished unsuccessfully, `undefined` otherwise. If it got a response, it can be accessed via `error.response`                      |
+| data         | any \| undefined                     | If the query finished successfully, it will contain the data of the response. Is like response.date                                                                 |
+| executeQuery | `(data?: any, params?: any) => void` | Function to trigger the query. The first argument is the data that will be sent in the body whereas the second parameter is used to add query parameters in the URL |
+| resetQuery   | `() => void`                         |                                                                                                                                                                     |
 
-## 6 - useMultipleQueries
+## 6 - ApiProvider
 
-This hooks allows to perform multiple queries in parallel with a syntax similar to that of `useQuery`.
+This global provider allows to set some default parameters for the `useQuery` hook.
 
 ### 6.1 - Parameters
 
-| Parameter          | Type                 | Default     | Description                                                                                                                                                                                                                                                                                          |
-| ------------------ | -------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| queries            | object               |             | Object where the key is the name of the query. The content variables are described below.                                                                                                                                                                                                            |
-| -- url             | string               |             | Endpoint url                                                                                                                                                                                                                                                                                         |
-| -- method          | string               | 'GET'       | Request method (GET, POST...)                                                                                                                                                                                                                                                                        |
-| -- data            | object               | { }         | Request body                                                                                                                                                                                                                                                                                         |
-| -- onSuccess       | `(response) => void` |             | Function executed after a successful query                                                                                                                                                                                                                                                           |
-| -- onUnauthorized  | `(error) => void`    |             | Function executed after an unsuccessful query if the response code is 401 (optional, see `onError`). The default function is the one defined in the `ApiProvider` if it is not specified in useMultipleQueries. To disable the default one and not use an `onUnauthorized` set `onUnauthorized=null` |
-| -- onError         | `(error) => void`    |             | Function executed after an unsuccessful query. If `onUnauthorized` is not defined, it also handles 401 status code                                                                                                                                                                                   |
-| executeImmediately | boolean              | false       | Sets whether the call should be executed when the component is created or wait for the call to `executeQueries()`                                                                                                                                                                                    |
-| onEnd              | `(response) => void` | `() => { }` | Function executed after after all the queries finished                                                                                                                                                                                                                                               |
-| clientOptions      | object               | `{}`        | Extra Axios options, ex. `{timeout: 1000}`                                                                                                                                                                                                                                                           |
+All the parameters can be overriden in the `useQuery` hook.
 
-### 6.2 - Returned parameters
-
-| Parameter      | Type                  | Description                                                                                                                                                 |
-| -------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| executeQueries | `(data?: {}) => void` | Start the queries with optional body as parameter. `data` should be an object where the key is the name of the query and the value is the actual query data |
-| errors         | object                | Object containing all the received errors. The key is the name of the query, the value is the error                                                         |
-| responses      | object                | Object containing all the received successful responses. The key is the name of the query, the value is the response                                        |
-| statuses       | object                | Object containing the status of each query. The key is the name of the query, the value is the status                                                       |
-| isLoading      | boolean               | `true` if any calls are in progress, `false` otherwise, even if it has not yet started                                                                      |
-| queries        | object                | Contains all the information of each query. The key is the name of the query, the value is an object with the following queries: `status, error, response`  |
-
-## 7 - Examples
-
-### 7.1 - Example 1
-
-```javascript
-const { isLoading, executeQuery } = useQuery({
-  url: "accounts/login/", // If baseUrl has been set, you can use a relative url. It also accepts absolute urls.
-  method: "POST",
-  executeImmediately: false,
-  onSuccess: (response) => {
-    console.log(response);
-  },
-  onUnauthorized: (response) => {
-    console.log(response);
-  },
-});
-
-const submitForm(value) => {
-  executeQuery(value);
-}
-
-if(isLoading)
-  return <Loader />
-else
-  return <Form submitForm={submitForm} />
-```
-
-### 7.2 - Example 2
-
-```javascript
-const { isLoading, isSuccess, data, error } = useQuery({
-  url: "api/v1/userinfo/",
-  method: "GET",
-  executeImmediately: true,
-})
-
-if (isLoading) return <Loader />
-else if (isSuccess) return <UserInfo data={data} />
-else return <Error error={error} />
-```
-
-### 6.3 - Example with useMultipleQueries
-
-```javascript
-const { queries } = useMultipleQueries({
-  queries: {
-    query1: {
-      url: "https://jsonplaceholder.typicode.com/todos/1",
-      onSuccess: (response) => {
-        console.log("query1", response)
-      },
-    },
-    query2: {
-      url: "https://jsonplaceholder.typicode.com/todos/2",
-      onError: (error) => {
-        console.log("query2 error", error)
-      },
-      onSuccess: (response) => {
-        console.log("query2 success", response)
-      },
-    },
-    query3: {
-      url: "https://wrongdomain/todos/3",
-      onError: (error) => {
-        console.log("query3", error)
-      },
-    },
-  },
-  executeImmediately: true,
-  onEnd: () => {
-    console.log("All done")
-  },
-})
-```
-
-### 7.3 - Example with JWT
-
-```javascript
-import axios from "axios";
-import { generateJwtApiClient, ApiProvider } from "@hybris-software/use-query";
-...
-const apiClient = generateJwtApiClient({
-  baseUrl: "https://my.api.com/api/v1",
-  authorizationHeader: "Authorization",
-  authorizationPrefix: "Bearer ",
-  refreshTokenFunction: async ({accessToken, refreshToken}) => {
-    const response = await axios.post("https://example.com/refresh", {accessToken, refreshToken})
-    const updatedAccessToken = response.data.accessToken;
-    const updatedRefreshToken = response.data.refreshToken;
-    return [updatedAccessToken, updatedRefreshToken];
-  }
-})
-...
-root.render(
-  <React.StrictMode>
-    <ApiProvider apiClient={apiClient} onUnauthorized={(response) => {console.log(response)}}>
-      <App />
-    </ApiProvider>
-  </React.StrictMode >
-);
-```
+| Parameter      | Type                                              | Description                                                               |
+| -------------- | ------------------------------------------------- | ------------------------------------------------------------------------- |
+| apiClient      | AxiosInstance (optional)                          | The Axios client that will be used to call the API                        |
+| onSuccess      | `(response: AxiosResponse) => void` (optional)    | Function executed after a successful query                                |
+| onUnauthorized | `(error: AxiosError) => void` (optional)          | Function executed after an unsuccessful query if the response code is 401 |
+| onError        | `(error: Error \| AxiosError) => void` (optional) | Function executed after an unsuccessful query                             |
