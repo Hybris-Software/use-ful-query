@@ -6,6 +6,7 @@ import {
   ApiProviderContextData,
   QueryState,
   QueryActions,
+  UseQueryReturn,
 } from "../types"
 
 export const useQuery = ({
@@ -17,7 +18,7 @@ export const useQuery = ({
   onUnauthorized: _onUnauthorized = undefined,
   clientOptions = {},
   apiClient,
-}: UseQueryProps) => {
+}: UseQueryProps): UseQueryReturn => {
   //*******************************************
   // States
   //*******************************************

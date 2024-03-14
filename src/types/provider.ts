@@ -1,11 +1,11 @@
 import React from "react"
-import { AxiosInstance } from "axios"
+import { AxiosInstance, AxiosResponse, AxiosError } from "axios"
 
 export type ApiProviderContextData = {
   apiClient: AxiosInstance | null
-  onUnauthorized?: any // TODO
-  onError?: any // TODO
-  onSuccess?: any // TODO
+  onSuccess?: (response: AxiosResponse) => void
+  onUnauthorized?: (error: AxiosError) => void
+  onError?: (error: Error | AxiosError) => void
 }
 
 export type ApiProviderProps = ApiProviderContextData & {
