@@ -1,7 +1,7 @@
 {
   "name": "@hybrissoftware/use-ful-query",
   "description": "Simple way to manage your api calls",
-  "version": "3.0.0",
+  "version": "0.1.0",
   "repository": "hybris-software/use-ful-query",
   "keywords": [
     "react",
