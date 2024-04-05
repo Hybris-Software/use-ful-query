@@ -51,6 +51,7 @@ __metadata:
     "@rollup/plugin-typescript": "npm:^11.1.6"
     "@semantic-release/git": "npm:^10.0.1"
     "@semantic-release/github": "npm:^10.0.2"
+    "@semantic-release/npm": "npm:^12.0.0"
     "@types/react": "npm:^18.2.55"
     "@types/rollup-plugin-peer-deps-external": "npm:^2"
     axios: "npm:^0.27.2"
