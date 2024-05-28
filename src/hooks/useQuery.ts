@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef, useContext } from "react"
+import { useReducer, useEffect, useRef, useContext, useState } from "react"
 import { ApiProviderContext } from "../context/apiProviderContext"
 import { Status, generateApiClient } from "../utils"
 import {
@@ -7,6 +7,7 @@ import {
   QueryState,
   QueryActions,
   UseQueryReturn,
+  SetQueryParams,
 } from "../types"
 
 export const useQuery = ({
@@ -18,6 +19,7 @@ export const useQuery = ({
   onUnauthorized: _onUnauthorized,
   clientOptions = {},
   apiClient,
+  queryParams: defaultQueryParams = {},
 }: UseQueryProps): UseQueryReturn => {
   //*******************************************
   // States
@@ -30,6 +32,8 @@ export const useQuery = ({
   }: ApiProviderContextData = useContext(ApiProviderContext)
 
   const requestId = useRef<string | null>(null)
+
+  const [queryParams, setQueryParamsState] = useState(defaultQueryParams)
 
   //*******************************************
   // Variables
@@ -99,11 +103,20 @@ export const useQuery = ({
 
     dispatch({ status: Status.LOADING })
 
+    const cleanQueryParams = Object.entries(queryParams).reduce<
+      Record<string, string>
+    >((acc, [key, value]) => {
+      if (value !== null) {
+        acc[key] = value
+      }
+      return acc
+    }, {})
+
     _apiClient({
       url: url,
       method: method,
       data: data,
-      params: params,
+      params: params || cleanQueryParams,
       ...clientOptions,
     })
       .then((response) => {
@@ -134,9 +147,19 @@ export const useQuery = ({
     dispatch({ status: Status.IDLE })
   }
 
+  const setQueryParams: SetQueryParams = (
+    params,
+    options = { runQuery: false }
+  ) => {
+    // If executeImmediately is true, just update the state, the useEffect will take care of executing the query.
+    // Otherwise, call the executeQuery function.
+    setQueryParamsState(params)
+    if (options.runQuery && !executeImmediately) executeQuery(undefined, params)
+  }
+
   useEffect(() => {
     if (executeImmediately) executeQuery()
-  }, [url])
+  }, [url, executeImmediately, queryParams])
 
   return {
     isLoading: state.status === Status.LOADING,
@@ -148,5 +171,7 @@ export const useQuery = ({
     data: state.status === Status.SUCCESS ? state.response.data : undefined,
     executeQuery: executeQuery,
     resetQuery: resetQuery,
+    queryParams: queryParams,
+    setQueryParams,
   }
 }
