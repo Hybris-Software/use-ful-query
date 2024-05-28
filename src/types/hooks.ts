@@ -5,6 +5,11 @@ import {
   AxiosError,
 } from "axios"
 
+export type SetQueryParams = (
+  params: Record<string, string | null>,
+  options?: { runQuery: boolean }
+) => void
+
 export type UseQueryProps = {
   url?: string
   method?: string
@@ -14,6 +19,7 @@ export type UseQueryProps = {
   onError?: ((error: Error | AxiosError) => void) | null
   clientOptions?: AxiosRequestConfig
   apiClient?: AxiosInstance
+  queryParams?: Record<string, string | null>
 }
 
 export type UseQueryReturn = {
@@ -26,6 +32,8 @@ export type UseQueryReturn = {
   data?: any
   executeQuery: (data?: any, params?: any) => void
   resetQuery: () => void
+  queryParams: Record<string, string | null>
+  setQueryParams: SetQueryParams
 }
 
 export type QueryState = {
